@@ -83,7 +83,7 @@ def convert_to_binary_dir(dir, desired_threshold):
             output_image_path = filename
             convert_to_binary(input_image_path, output_image_path, desired_threshold)
 
-dir = "C:/Users/bachc/Downloads/london_real/sem_seg"
+dir = "C:/Users/haavik.2/Documents/GitHub/HRNet-Semantic-Segmentation/data/output_slices/sem_seg"
 desired_threshold = 50 # Adjust this value based on your image content
 convert_to_binary_dir(dir, desired_threshold)
 
