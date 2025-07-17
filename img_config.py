@@ -69,8 +69,9 @@ def convert_to_binary(input_path, output_path, threshold=128):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-desired_threshold = 100 # Adjust this value based on your image content
+
 dir = "C:/Users/bachc/Downloads/London_real/Sem_seg"
+desired_threshold = 50 # Adjust this value based on your image content
 # convert_to_binary("C:/Users/bachc/Documents/GitHub/HRNet-Semantic-Segmentation/data/cbus/output_slices/Sem_seg/slice_0_0_1.png", "C:/Users/bachc/Documents/GitHub/HRNet-Semantic-Segmentation/data/cbus/output_slices/Sem_seg/slice_0_0_1.png", desired_threshold)
 
 
@@ -82,8 +83,9 @@ def convert_to_binary_dir(dir, desired_threshold):
             output_image_path = filename
             convert_to_binary(input_image_path, output_image_path, desired_threshold)
 
-dir = "C:/Users/bachc/Downloads/London_real/Sem_seg"
-# convert_to_binary_dir(dir, desired_threshold)
+dir = "C:/Users/bachc/Downloads/london_real/sem_seg"
+desired_threshold = 50 # Adjust this value based on your image content
+convert_to_binary_dir(dir, desired_threshold)
 
 
 def resize_images(dir):
@@ -104,7 +106,7 @@ def resize_image(filename, size):
     resized_image.save(filename.split('.')[0] + "_resized.png")
 
 filename ="C:/Users/bachc/Downloads/london_planetscope.png"
-resize_image(filename, (1666, 1666))
+# resize_image(filename, (1666, 1666))
 
 
 def gaussian_blur_images(dir, kernel_size=(5, 5), sigma=0):

@@ -1,15 +1,7 @@
 import random
 import math
 
-dataset_type = "real"
-city = "london"
-img_type = "Sem_seg"
-slice_w = 0
-slice_h = 0
-iter = 0
 
-
-input_str = f"{city}/{city}_{dataset_type}/Color/slice_{slice_w}_{slice_h}_{iter}.png\t{city}/{city}_{dataset_type}/Sem_seg/slice_{slice_w}_{slice_h}_{iter}.png"
 real_str = f"cbus/train/test/train_%d.png"
 # input_str_no_parentheses = "unet/data/synthset-2.1/synthset/color/row-%d-column-%d.png\tunet/data/synthset-2.1/synthset/sem_seg/row-%d-column-%d.png"
 val_str = ""
@@ -32,12 +24,21 @@ test_str = "cbus/train/test/train_%d.png\tcbus/labels/test/train_%d.png"
 #         output_str += input_str % (i, j, i, j, 5)
 #         output_str += '\n'
 
+dataset_type = "real"
+city = "london"
+img_type = "color"
+slice_w = 0
+slice_h = 0
+iter = 0
+
+input_str = f"{city}/{city}_{dataset_type}/Color/slice_%d_%d_%d.png\t{city}/{city}_{dataset_type}/Sem_seg/slice_%d_%d_%d.png"
+
 total_counter = 0
 val_counter = 0
-num_slices_horz = 26
-num_slices_vert = 32
-num_iters = 2
-num_samples = 20
+num_slices_horz = 17
+num_slices_vert = 18
+num_iters = 1
+num_samples = 250
 val_percentage = 0.2
 
 for i in range (0, num_slices_horz):
@@ -48,13 +49,15 @@ for i in range (0, num_slices_horz):
                 iter = k
                 slice_w = i
                 slice_h = j
-                input_str = f"{city}/{city}_{dataset_type}/Color/slice_{slice_w}_{slice_h}_{iter}.png\t{city}/{city}_{dataset_type}/Sem_seg/slice_{slice_w}_{slice_h}_{iter}.png"
+                dataset_type = 'real'
+                city = 'london'
+                img_type = 'color'
                 if val_counter < num_samples * val_percentage and random.random() > 1 - val_percentage:
-                    val_str += input_str
+                    val_str += input_str % (i, j, k, i, j, k)
                     val_str += '\n'
                     val_counter += 1
                 else:
-                    train_str += input_str
+                    train_str += input_str % (i, j, k, i, j, k)
                     train_str += '\n'
                 total_counter += 1
             # test_str += input_str % (i, j, i, j)

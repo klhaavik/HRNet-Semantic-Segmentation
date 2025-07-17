@@ -52,7 +52,7 @@ def slice_image_with_overlap(image_path, output_dir, slice_size=(256, 256), over
     print(f"Saved {count} slices to {output_dir}")
 
 city = "london" 
-img_type = "color"
+img_type = "sem_seg"
 
 # counter = 0
 # for img_file in os.listdir(f"C:/Users/bachc/Documents/GitHub/Synthset-Generation/Blender/{city}/Images/{img_type}"):
@@ -63,7 +63,7 @@ img_type = "color"
 #         counter += 1
 
 slice_image_with_overlap(
-    f"C:/Users/bachc/Downloads/{city}_planetscope.png",
+    f"C:/Users/bachc/Downloads/{city}_gt.png",
     f"C:/Users/bachc/Downloads/{city}_real/{img_type}",
     slice_size=(256, 256),
     overlap=(32, 32),
