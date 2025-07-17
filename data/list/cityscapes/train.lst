@@ -1,4 +1,4 @@
-leftImg8bit/train/aachen/aachen_000000_000019_leftImg8bit.png	gtFine/train/aachen/aachen_000000_000019_gtFine_labelIds.png
+leftImg8bit/train/aachen/aachen_000000_000019_leftImg8bit.png   gtFine/train/aachen/aachen_000000_000019_gtFine_labelIds.png
 leftImg8bit/train/aachen/aachen_000001_000019_leftImg8bit.png	gtFine/train/aachen/aachen_000001_000019_gtFine_labelIds.png
 leftImg8bit/train/aachen/aachen_000002_000019_leftImg8bit.png	gtFine/train/aachen/aachen_000002_000019_gtFine_labelIds.png
 leftImg8bit/train/aachen/aachen_000003_000019_leftImg8bit.png	gtFine/train/aachen/aachen_000003_000019_gtFine_labelIds.png

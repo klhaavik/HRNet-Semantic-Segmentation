@@ -28,6 +28,7 @@ def reduce_tensor(inp):
     Reduce the loss from all processes so that 
     process with rank 0 has the averaged results.
     """
+    return inp
     world_size = dist.get_world_size()
     if world_size < 2:
         return inp
@@ -51,16 +52,19 @@ def train(config, epoch, num_epoch, epoch_iters, base_lr,
 
     for i_iter, batch in enumerate(trainloader, 0):
         images, labels, _, _ = batch
-        images = images.cuda()
-        labels = labels.long().cuda()
-
+        images = images
+        labels = labels.long()
+        # print(next(model.parameters()).device)  # Shows the device of model parameters
+        # print(images.device)                   # Shows device of your input images
+        # print(labels.device)  
         losses, _ = model(images, labels)
         loss = losses.mean()
 
-        if dist.is_distributed():
-            reduced_loss = reduce_tensor(loss)
-        else:
-            reduced_loss = loss
+        # if dist.is_distributed():
+        #     reduced_loss = reduce_tensor(loss)
+        # else:
+        #     reduced_loss = loss
+        reduced_loss = loss
 
         model.zero_grad()
         loss.backward()
@@ -78,7 +82,7 @@ def train(config, epoch, num_epoch, epoch_iters, base_lr,
                                   num_iters,
                                   i_iter+cur_iters)
 
-        if i_iter % config.PRINT_FREQ == 0 and dist.get_rank() == 0:
+        if i_iter % config.PRINT_FREQ == 0: # and dist.get_rank() == 0
             msg = 'Epoch: [{}/{}] Iter:[{}/{}], Time: {:.2f}, ' \
                   'lr: {}, Loss: {:.6f}' .format(
                       epoch, num_epoch, i_iter, epoch_iters,
@@ -98,8 +102,8 @@ def validate(config, testloader, model, writer_dict):
         for idx, batch in enumerate(testloader):
             image, label, _, _ = batch
             size = label.size()
-            image = image.cuda()
-            label = label.long().cuda()
+            image = image
+            label = label.long()
 
             losses, pred = model(image, label)
             if not isinstance(pred, (list, tuple)):
@@ -122,14 +126,15 @@ def validate(config, testloader, model, writer_dict):
                 print(idx)
 
             loss = losses.mean()
-            if dist.is_distributed():
-                reduced_loss = reduce_tensor(loss)
-            else:
-                reduced_loss = loss
+            # if dist.is_distributed():
+            #     reduced_loss = reduce_tensor(loss)
+            # else:
+            #     reduced_loss = loss
+            reduced_loss = loss
             ave_loss.update(reduced_loss.item())
 
     if dist.is_distributed():
-        confusion_matrix = torch.from_numpy(confusion_matrix).cuda()
+        confusion_matrix = torch.from_numpy(confusion_matrix)
         reduced_confusion_matrix = reduce_tensor(confusion_matrix)
         confusion_matrix = reduced_confusion_matrix.cpu().numpy()
 
@@ -139,8 +144,9 @@ def validate(config, testloader, model, writer_dict):
         tp = np.diag(confusion_matrix[..., i])
         IoU_array = (tp / np.maximum(1.0, pos + res - tp))
         mean_IoU = IoU_array.mean()
-        if dist.get_rank() <= 0:
-            logging.info('{} {} {}'.format(i, IoU_array, mean_IoU))
+        # if dist.get_rank() <= 0:
+            # logging.info('{} {} {}'.format(i, IoU_array, mean_IoU))
+        logging.info('{} {} {}'.format(i, IoU_array, mean_IoU))
 
     writer = writer_dict['writer']
     global_steps = writer_dict['valid_global_steps']

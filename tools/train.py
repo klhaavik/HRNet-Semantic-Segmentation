@@ -33,6 +33,8 @@ from core.function import train, validate
 from utils.modelsummary import get_model_summary
 from utils.utils import create_logger, FullModel
 
+os.environ['USE_LIBUV'] = '0'
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Train segmentation network')
     
@@ -53,12 +55,13 @@ def parse_args():
     return args
 
 def get_sampler(dataset):
-    from utils.distributed import is_distributed
-    if is_distributed():
-        from torch.utils.data.distributed import DistributedSampler
-        return DistributedSampler(dataset)
-    else:
-        return None
+    # from utils.distributed import is_distributed
+    # if is_distributed():
+    #     from torch.utils.data.distributed import DistributedSampler
+    #     return DistributedSampler(dataset)
+    # else:
+    #     return None
+    return None
 
 def main():
     args = parse_args()
@@ -85,8 +88,9 @@ def main():
     cudnn.benchmark = config.CUDNN.BENCHMARK
     cudnn.deterministic = config.CUDNN.DETERMINISTIC
     cudnn.enabled = config.CUDNN.ENABLED
-    gpus = list(config.GPUS)
-    distributed = args.local_rank >= 0
+    # gpus = list(config.GPUS)
+    gpus = None
+    distributed = False
     if distributed:
         device = torch.device('cuda:{}'.format(args.local_rank))    
         torch.cuda.set_device(device)
@@ -111,13 +115,16 @@ def main():
         #     shutil.rmtree(models_dst_dir)
         # shutil.copytree(os.path.join(this_dir, '../lib/models'), models_dst_dir)
 
-    if distributed:
-        batch_size = config.TRAIN.BATCH_SIZE_PER_GPU
-    else:
-        batch_size = config.TRAIN.BATCH_SIZE_PER_GPU * len(gpus)
+    # if distributed:
+    #     batch_size = config.TRAIN.BATCH_SIZE_PER_GPU
+    # else:
+    #     batch_size = config.TRAIN.BATCH_SIZE_PER_GPU * len(gpus)
+
+    batch_size = config.TRAIN.BATCH_SIZE_PER_GPU
 
     # prepare data
     crop_size = (config.TRAIN.IMAGE_SIZE[1], config.TRAIN.IMAGE_SIZE[0])
+    #print()
     train_dataset = eval('datasets.'+config.DATASET.DATASET)(
                         root=config.DATASET.ROOT,
                         list_path=config.DATASET.TRAIN_SET,
@@ -165,7 +172,7 @@ def main():
             drop_last=True,
             sampler=extra_train_sampler)
         extra_epoch_iters = np.int(extra_train_dataset.__len__() / 
-                        config.TRAIN.BATCH_SIZE_PER_GPU / len(gpus))
+                        config.TRAIN.BATCH_SIZE_PER_GPU)
 
 
     test_size = (config.TEST.IMAGE_SIZE[1], config.TEST.IMAGE_SIZE[0])
@@ -210,7 +217,9 @@ def main():
             output_device=args.local_rank
         )
     else:
-        model = nn.DataParallel(model, device_ids=gpus).cuda()
+        # model = nn.DataParallel(model, device_ids=gpus).cuda()
+        device = torch.device("cpu") 
+        model.to(device)
     
 
     # optimizer
@@ -242,7 +251,7 @@ def main():
         raise ValueError('Only Support SGD optimizer')
 
     epoch_iters = np.int(train_dataset.__len__() / 
-                        config.TRAIN.BATCH_SIZE_PER_GPU / len(gpus))
+                        config.TRAIN.BATCH_SIZE_PER_GPU)
         
     best_mIoU = 0
     last_epoch = 0
@@ -250,7 +259,7 @@ def main():
         model_state_file = os.path.join(final_output_dir,
                                         'checkpoint.pth.tar')
         if os.path.isfile(model_state_file):
-            checkpoint = torch.load(model_state_file, map_location={'cuda:0': 'cpu'})
+            checkpoint = torch.load(model_state_file, map_location=torch.device('cpu'))
             best_mIoU = checkpoint['best_mIoU']
             last_epoch = checkpoint['epoch']
             dct = checkpoint['state_dict']
@@ -268,7 +277,7 @@ def main():
     extra_iters = config.TRAIN.EXTRA_EPOCH * extra_epoch_iters
     
     for epoch in range(last_epoch, end_epoch):
-
+        print("In epochs")
         current_trainloader = extra_trainloader if epoch >= config.TRAIN.END_EPOCH else trainloader
         if current_trainloader.sampler is not None and hasattr(current_trainloader.sampler, 'set_epoch'):
             current_trainloader.sampler.set_epoch(epoch)

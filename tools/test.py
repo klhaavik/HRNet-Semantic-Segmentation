@@ -71,7 +71,7 @@ def main():
     dump_input = torch.rand(
         (1, 3, config.TRAIN.IMAGE_SIZE[1], config.TRAIN.IMAGE_SIZE[0])
     )
-    logger.info(get_model_summary(model.cuda(), dump_input.cuda()))
+    # logger.info(get_model_summary(model.cuda(), dump_input.cuda()))
 
     if config.TEST.MODEL_FILE:
         model_state_file = config.TEST.MODEL_FILE
@@ -91,8 +91,8 @@ def main():
     model_dict.update(pretrained_dict)
     model.load_state_dict(model_dict)
 
-    gpus = list(config.GPUS)
-    model = nn.DataParallel(model, device_ids=gpus).cuda()
+    # gpus = list(config.GPUS)
+    # model = nn.DataParallel(model, device_ids=gpus).cuda()
 
     # prepare data
     test_size = (config.TEST.IMAGE_SIZE[1], config.TEST.IMAGE_SIZE[0])

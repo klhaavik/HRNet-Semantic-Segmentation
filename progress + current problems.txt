@@ -1,0 +1,55 @@
+7/7
+HRNet works, is fully functional and is actually training, however results leave lots to be desired.
+So far:
+Training on synthset_v1 - performs decently on validation after just a few (5) epochs, but does horribly when predicting real dataset
+Training on synthset_v2 - 5 epochs did not yield best results, trying for more but possible that it may be too sparsely populated with buildings
+
+7/10:
+results still not good for predicting real dataset, current path:
+(I have updated dataset without bg and blurred training in the meantime)
+Try training on Toronto synthset and compare to Toronto gt
+Try changing textures, in particular the lot inner stretched green texture
+
+7/14:
+Dr. Hur feedback on report:
+Not organized, make section titles better and add subheadings
+- adding info is much easier when you have a format down
+articulate/structure presentation of results better
+
+Talk about w Shuang:
+next locations
+include cbus results in report?
+
+TODO:
+revise abstract based on feedback
+
+
+7/15:
+getting London synthset and training underway, try to do at least 1 synthset per day until the end of the week
+
+main hurdle now is figuring out how I can get the results I want, + revising report and putting poster together
+still need to interpret results which is the big thing
+
+Note: You actually can't import map data from OSM with more than a maximum tile size, possible limitation
+
+
+7/16:
+accidentally fucked up and made the planetscope dataset a different size, performance was higher, may be due to increased size of dataset or other factors, but would be interesting if it was due to image size
+
+New update: MUST CONTROL FOR SIZE OF DATASET, must be pretty comparable (i.e., not more than ~1.25x, Shuang says 1.1x is fine)
+While I've realized this, let me list all the controlling factors I can think of:
+Image size
+Image GSD
+# of images
+Taken from contiguous or distinct sites
+Taken at a similar time (recent data)
+
+Variable = Image content (colors, textures, etc.)
+
+we want: contiguous, 256x256, 3m/px, still have to decide the size, most recent planetscope images (CityEngine satellite view is updated regularly), 
+
+
+General engineering advice: ALWAYS DOUBLE CHECK EACH STEP AFTER YOU DO IT, JUST IN CASE
+FINALIZE YOUR PARAMETERS AND THEN DON'T TOUCH THEM??? this one is hard tho cause how are you gonna make iterative improvements, ig you separate the ones that matter from the ones that don't and can be set in stone
+
+Do everything like you have to make a final report on it, because you will, eventually.

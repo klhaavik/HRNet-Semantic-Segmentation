@@ -28,6 +28,7 @@ class FullModel(nn.Module):
   def __init__(self, model, loss):
     super(FullModel, self).__init__()
     self.model = model
+    self.model.to('cpu')
     self.loss = loss
 
   def forward(self, inputs, labels, *args, **kwargs):
