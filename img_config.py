@@ -71,7 +71,7 @@ def convert_to_binary(input_path, output_path, threshold=128):
 
 
 dir = "C:/Users/bachc/Downloads/London_real/Sem_seg"
-desired_threshold = 50 # Adjust this value based on your image content
+desired_threshold = 25 # Adjust this value based on your image content
 # convert_to_binary("C:/Users/bachc/Documents/GitHub/HRNet-Semantic-Segmentation/data/cbus/output_slices/Sem_seg/slice_0_0_1.png", "C:/Users/bachc/Documents/GitHub/HRNet-Semantic-Segmentation/data/cbus/output_slices/Sem_seg/slice_0_0_1.png", desired_threshold)
 
 
@@ -83,10 +83,14 @@ def convert_to_binary_dir(dir, desired_threshold):
             output_image_path = filename
             convert_to_binary(input_image_path, output_image_path, desired_threshold)
 
-dir = "C:/Users/haavik.2/Documents/GitHub/HRNet-Semantic-Segmentation/data/output_slices/sem_seg"
-desired_threshold = 50 # Adjust this value based on your image content
-convert_to_binary_dir(dir, desired_threshold)
+city = "washington"
+dir = f"C:/Users/bachc/Downloads/{city}_real/sem_seg"
+desired_threshold = 25 # Adjust this value based on your image content
+# convert_to_binary_dir(dir, desired_threshold)
 
+all_files = glob.glob('C:/Users/bachc/Downloads/Final round results/**/*.png', recursive=True)
+for file in all_files:
+    convert_to_binary(file, file, desired_threshold)
 
 def resize_images(dir):
     for imgfile in os.listdir(dir):

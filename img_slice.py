@@ -53,26 +53,27 @@ def slice_image_with_overlap(image_path, output_dir, slice_size=(256, 256), over
 
     print(f"Saved {count} slices to {output_dir}")
 
-city = "london" 
-img_type = "color"
+city = "washington" 
+img_type = "sem_seg"
+img_type_suffix = "planetscope" if img_type == "color" else "gt"
 suffix = f"C:/Users/haavik.2/Documents/GitHub/Synthset-Generation/Blender/{city}/{img_type}"
 dir_path = os.path.join(str(home), suffix)
 
-counter = 0
-for img_file in os.listdir(dir_path):
-    if img_file.endswith(".png"):
-        image_path = os.path.join(dir_path, img_file)
-        output_dir = f"data/output_slices/{img_type}"
-        slice_image_with_overlap(image_path, output_dir, slice_size=(256, 256), overlap=(32, 32), iteration=counter)
-        counter += 1
+# counter = 0
+# for img_file in os.listdir(dir_path):
+#     if img_file.endswith(".png"):
+#         image_path = os.path.join(dir_path, img_file)
+#         output_dir = f"data/output_slices/{img_type}"
+#         slice_image_with_overlap(image_path, output_dir, slice_size=(256, 256), overlap=(32, 32), iteration=counter)
+#         counter += 1
 
-# slice_image_with_overlap(
-#     f"C:/Users/bachc/Downloads/{city}_gt.png",
-#     f"C:/Users/bachc/Downloads/{city}_real/{img_type}",
-#     slice_size=(256, 256),
-#     overlap=(32, 32),
-#     iteration=0
-# )
+slice_image_with_overlap(
+    f"C:/Users/bachc/Downloads/{city}_{img_type_suffix}.png",
+    f"C:/Users/bachc/Downloads/{city}_real/{img_type}",
+    slice_size=(256, 256),
+    overlap=(32, 32),
+    iteration=0
+)
 
 # slice_image_with_overlap(
 #     f"C:/Users/bachc/Downloads/{city}_gt_2.png",

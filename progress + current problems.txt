@@ -53,3 +53,51 @@ General engineering advice: ALWAYS DOUBLE CHECK EACH STEP AFTER YOU DO IT, JUST 
 FINALIZE YOUR PARAMETERS AND THEN DON'T TOUCH THEM??? this one is hard tho cause how are you gonna make iterative improvements, ig you separate the ones that matter from the ones that don't and can be set in stone
 
 Do everything like you have to make a final report on it, because you will, eventually.
+
+7/17:
+Update on specs: size will be one PlanetScope quad, which renders into ~350 images, of which 250 will be sampled by the DataLoader. 
+For consistency, render settings in Blender should be kept the same as well. Now that I have a good computer to render on, sky tex produces the best shadows for downtown areas with skyscrapers like Toronto, so I'll render the other synthsets with this as well. (if it doesn't take years that is)
+Maybe - test everything, so sky tex render vs. normal -- now that I have the good computer I might as well
+
+
+7/18:
+Ok calm down and collect thoughts lmao
+After talk w Shuang:
+TODO: test synthsets on different domains
+It's acceptable that real performs much higher, just make sure synthset performs better on its own domain
+To make the absolute most fair test:
+use data augmentation to upsample PlanetScope dataset, do not downsample synthset as it will hurt performance? (although not really seen on tests so far)
+Still: gen 1-2 more synthsets to have comprehensive results
+also use a consistent render engine, perhaps redoing the London training on cycles to keep it consistent
+
+if have time (which prob won't): Test mixing the synthetic data in with real
+
+
+
+7/20:
+models trained so far w data augmentation for real and no sub sampling for synthetic:
+Washington synthset
+Toronto real
+London real
+
+In training:
+Washington real
+
+todo: 
+retrain Toronto synthset
+re-export London synthset w cycles and retrain
+
+7/21:
+Remember: Washington and Toronto synthset were NOT FULLY TRAINED, still need to train them to 100% to get fully accurate results
+TODO: talk w/ Shuang about these things:
+data augmentation on real data makes model perform way worse on evaluation, unless you want to evaluate the synthetic images on the augmented data? but I find that hard to believe. So, what should be done about this? I propose keeping the real non-data-augmented simply because it has a better score, it's what the synthset models are being evaluated on, and I don't have time to mess around to find good augmentations.
+Should I retrain the models with an equal weight assigned to buildings and non-buildings? Maybe just to see, since the imbalance was for Columbus where the disparity was great
+
+7/23:
+Talk w/ Shuang:
+Is there a way to maintain access to the OSC after the program?
+Training with balanced weights showed promising results
+
+7/25:
+TODO: Complete testing mixed synthset vs. not on equal weights
+

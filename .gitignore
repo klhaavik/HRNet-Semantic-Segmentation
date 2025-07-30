@@ -11,3 +11,9 @@ data/list
 *.xml
 *.iml
 .idea/
+*.tif
+*.jpg
+*.png
+*.jpeg
+*.gif
+*.lst

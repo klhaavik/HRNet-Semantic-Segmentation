@@ -29,6 +29,53 @@ def gen_list_trainval(num_slices_vert, num_slices_horz, num_iters, num_samples: 
     return train_str.rstrip(), val_str.rstrip()
 
 
+def gen_list_testval(num_slices_vert, num_slices_horz, num_iters):
+    test_str = ""
+
+    for i in range (0, num_slices_vert):
+        for j in range (0, num_slices_horz):
+            for k in range(0, num_iters):
+                test_str += input_str % (i, j, k, i, j, k)
+                test_str += '\n'
+
+    return test_str.rstrip()
+
+def gen_list_trainval_mixed(num_slices_vert, num_slices_horz, num_slices_vert_synthset, num_slices_horz_synthset, num_samples: int=None, ignore_slices: set=None, val_percentage=0.2):
+    train_str, val_str = "", ""
+    total_counter, val_counter, synth_counter = 0, 0, 0
+    output_str = ""
+
+    if not num_samples:
+        num_samples = num_slices_vert * num_slices_horz * num_iters
+
+    for i in range (0, num_slices_vert):
+        for j in range (0, num_slices_horz):
+            if ignore_slices and (i, j) in ignore_slices: continue
+            if total_counter < num_samples:
+                if synth_counter == 7:
+                    while(True):
+                        x = i % num_slices_vert_synthset
+                        y = j % num_slices_horz_synthset
+                        z = random.randint(0, num_iters - 1)
+                        if train_str.find(input_str.replace("real", "synthset") % (x, y, z, x, y, z)) == -1:
+                            break
+
+                    output_str = input_str.replace("real", "synthset") % (x, y, z, x, y, z)
+                    synth_counter = 0
+                else:
+                    output_str = input_str.replace("synthset", "real") % (i, j, 0, i, j, 0)
+                if val_counter < num_samples * val_percentage and random.random() > 1 - val_percentage and "synth" not in output_str:
+                    val_str += output_str
+                    val_str += '\n'
+                    val_counter += 1
+                else:
+                    train_str += output_str
+                    train_str += '\n'
+                    if "synth" not in output_str:
+                        synth_counter += 1
+                total_counter += 1
+    return train_str.rstrip(), val_str.rstrip()
+
 def read_ignore_slices_from_file(filename, num_slices_horz):
     with open(filename) as file:
         lines = [line.rstrip() for line in file]
@@ -65,23 +112,40 @@ def read_ignore_slices_from_file(filename, num_slices_horz):
 if __name__ == "__main__":
     random.seed(304)
 
-    num_slices_vert = 17
-    num_slices_horz = 18
-    num_iters = 1
+    num_slices_vert = 19
+    num_slices_horz = 19
+    num_slices_vert_synthset = 19
+    num_slices_horz_synthset = 19
+    num_iters = 5
     num_samples = None
     val_percentage = 0.2
 
-    filename = "data/london slices to remove.txt"
-    ignore_slices = read_ignore_slices_from_file(filename, num_slices_horz)
-    for item in ignore_slices:
-        print(item)
-
     dataset_type = "real"
-    city = "london"
+    city = "toronto"
+    train_or_test = "train"
+    mix = True
+    # filename = f"data/{city} slices to remove.txt"
+    # ignore_slices = read_ignore_slices_from_file(filename, num_slices_horz)
+    # for item in ignore_slices:
+    #     print(item)
+    ignore_slices = None
+
+
     input_str = f"{city}/{city}_{dataset_type}/color/slice_%d_%d_%d.png\t{city}/{city}_{dataset_type}/sem_seg/slice_%d_%d_%d.png"
 
-    strs = gen_list_trainval(num_slices_vert, num_slices_horz, num_iters, num_samples=num_samples, ignore_slices=ignore_slices, val_percentage=val_percentage)
-    file = open(os.path.join(str(home), f"Documents\\GitHub\\HRNet-Semantic-Segmentation\\{dataset_type}_train.lst"), "w")
-    file.write(strs[0])
-    file = open(os.path.join(str(home), f"Documents\\GitHub\\HRNet-Semantic-Segmentation\\{dataset_type}_val.lst"), "w")
-    file.write(strs[1])
+    if mix:
+        strs = gen_list_trainval_mixed(num_slices_vert, num_slices_horz, num_slices_vert_synthset, num_slices_horz_synthset, num_samples=num_samples, ignore_slices=ignore_slices, val_percentage=val_percentage)
+        file = open(os.path.join(str(home), f"Documents\\GitHub\\HRNet-Semantic-Segmentation\\{dataset_type}mixed_train.lst"), "w")
+        file.write(strs[0])
+        file = open(os.path.join(str(home), f"Documents\\GitHub\\HRNet-Semantic-Segmentation\\{dataset_type}mixed_val.lst"), "w")
+        file.write(strs[1])
+    elif train_or_test == "train":
+        strs = gen_list_trainval(num_slices_vert, num_slices_horz, num_iters, num_samples=num_samples, ignore_slices=ignore_slices, val_percentage=val_percentage)
+        file = open(os.path.join(str(home), f"Documents\\GitHub\\HRNet-Semantic-Segmentation\\{dataset_type}_train.lst"), "w")
+        file.write(strs[0])
+        file = open(os.path.join(str(home), f"Documents\\GitHub\\HRNet-Semantic-Segmentation\\{dataset_type}_val.lst"), "w")
+        file.write(strs[1])
+    elif train_or_test == "test":
+        strs = gen_list_testval(num_slices_vert, num_slices_horz, num_iters)
+        file = open(os.path.join(str(home), f"Documents\\GitHub\\HRNet-Semantic-Segmentation\\{dataset_type}_test.lst"), "w")
+        file.write(strs)
