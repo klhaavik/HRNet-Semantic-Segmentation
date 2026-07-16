@@ -6,22 +6,10 @@ import glob
 
 def brighten_images_in_dir(dir):
     for image_file in os.listdir(dir):
-        # cv2
-        # print(image_file)
-        # if not image_file.endswith(".jpg"): continue
-        # image = cv2.imread(os.path.join(dir, image_file))
-        # bright = cv2.convertScaleAbs(image, alpha=1.0, beta=-50)
-        # cv2.imwrite(os.path.join(dir, image_file), bright)
-        # PIL
         image = Image.open(os.path.join(dir, image_file))
         enhancer = ImageEnhance.Brightness(image)
         bright_image = enhancer.enhance(1.5)
         bright_image.save(image_file)
-
-dir = "unet/data/synthset-2.1/synthset/sem_seg"
-# brighten_images_in_dir(dir)
-
-
 
 def remove_channels_for_images_in(dir):
     for imgfile in os.listdir(dir):
@@ -38,10 +26,6 @@ def remove_channels_for_images_in(dir):
         #convert the image from RGBA2RGB
             image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR) 
         cv2.imwrite(filename, image)
-
-dir = "unet/data/synthset-2.1/synthset/sem_seg"
-# remove_channels_for_images_in(dir)
-
 
 def convert_to_binary(input_path, output_path, threshold=128):
     """
@@ -69,12 +53,6 @@ def convert_to_binary(input_path, output_path, threshold=128):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-
-dir = "C:/Users/bachc/Downloads/London_real/Sem_seg"
-desired_threshold = 25 # Adjust this value based on your image content
-# convert_to_binary("C:/Users/bachc/Documents/GitHub/HRNet-Semantic-Segmentation/data/cbus/output_slices/Sem_seg/slice_0_0_1.png", "C:/Users/bachc/Documents/GitHub/HRNet-Semantic-Segmentation/data/cbus/output_slices/Sem_seg/slice_0_0_1.png", desired_threshold)
-
-
 def convert_to_binary_dir(dir, desired_threshold):
     for imgfile in os.listdir(dir):
         filename = os.path.join(dir, imgfile)
@@ -82,15 +60,6 @@ def convert_to_binary_dir(dir, desired_threshold):
             input_image_path = filename
             output_image_path = filename
             convert_to_binary(input_image_path, output_image_path, desired_threshold)
-
-city = "washington"
-dir = f"C:/Users/bachc/Downloads/{city}_real/sem_seg"
-desired_threshold = 25 # Adjust this value based on your image content
-# convert_to_binary_dir(dir, desired_threshold)
-
-all_files = glob.glob('C:/Users/bachc/Downloads/Final round results/**/*.png', recursive=True)
-for file in all_files:
-    convert_to_binary(file, file, desired_threshold)
 
 def resize_images(dir):
     for imgfile in os.listdir(dir):
@@ -100,18 +69,10 @@ def resize_images(dir):
         image = Image.open(filename)
         image.resize((1666,1666)).save(filename.split('.')[0] + "_resized.png")
 
-dir = "C:/Users/bachc/Downloads/London_real/Sem_seg"
-# resize_images(dir)
-
-
 def resize_image(filename, size):
     image = Image.open(filename)
     resized_image = image.resize(size)
     resized_image.save(filename.split('.')[0] + "_resized.png")
-
-filename ="C:/Users/bachc/Downloads/london_planetscope.png"
-# resize_image(filename, (1666, 1666))
-
 
 def gaussian_blur_images(dir, kernel_size=(5, 5), sigma=0):
     for imgfile in os.listdir(dir):
@@ -122,5 +83,8 @@ def gaussian_blur_images(dir, kernel_size=(5, 5), sigma=0):
         blurred_image = cv2.GaussianBlur(image, kernel_size, sigma)
         cv2.imwrite(os.path.join(dir, imgfile), blurred_image)
 
-dir = "data/cbus/Toronto_synthset/color"
-# gaussian_blur_images(dir)
+if __name__ == "__main__":
+    city = "washington"
+    dir = f"C:/Users/bachc/Downloads/{city}_real/Sem_seg"
+    desired_threshold = 100
+    convert_to_binary_dir(dir, desired_threshold)

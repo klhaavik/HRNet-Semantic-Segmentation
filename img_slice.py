@@ -53,32 +53,22 @@ def slice_image_with_overlap(image_path, output_dir, slice_size=(256, 256), over
 
     print(f"Saved {count} slices to {output_dir}")
 
-city = "washington" 
-img_type = "sem_seg"
-img_type_suffix = "planetscope" if img_type == "color" else "gt"
-suffix = f"C:/Users/haavik.2/Documents/GitHub/Synthset-Generation/Blender/{city}/{img_type}"
-dir_path = os.path.join(str(home), suffix)
+def slice_all_images_in_dir(input_dir, output_dir, slice_size, overlap):
+    counter = 0
+    for img_file in os.listdir(input_dir):
+        if img_file.endswith(".png"):
+            image_path = os.path.join(input_dir, img_file)
+            output_dir = f"data/output_slices/{img_type}"
+            slice_image_with_overlap(image_path, output_dir, slice_size=(256, 256), overlap=(32, 32), iteration=counter)
+            counter += 1
 
-# counter = 0
-# for img_file in os.listdir(dir_path):
-#     if img_file.endswith(".png"):
-#         image_path = os.path.join(dir_path, img_file)
-#         output_dir = f"data/output_slices/{img_type}"
-#         slice_image_with_overlap(image_path, output_dir, slice_size=(256, 256), overlap=(32, 32), iteration=counter)
-#         counter += 1
+if __name__ == "__main__":
+    user = "haavik.2" #Update as needed
+    city = "washington" #Update as needed
+    img_type = "Sem_seg" #Update as needed
+    render_engine = "Cycles" #Update as needed
 
-slice_image_with_overlap(
-    f"C:/Users/bachc/Downloads/{city}_{img_type_suffix}.png",
-    f"C:/Users/bachc/Downloads/{city}_real/{img_type}",
-    slice_size=(256, 256),
-    overlap=(32, 32),
-    iteration=0
-)
+    input_dir = f"C:/Users/{user}/Documents/GitHub/Synthset-Generation/Blender/{city}/Images/{render_engine}/{img_type}"
+    output_dir = f"C:/Users/{user}/Documents/GitHub/Synthset-Generation/{city}/output_slices"
+    slice_all_images_in_dir(input_dir, output_dir, slice_size=(256, 256), overlap=(32, 32))
 
-# slice_image_with_overlap(
-#     f"C:/Users/bachc/Downloads/{city}_gt_2.png",
-#     f"C:/Users/bachc/Downloads/{city}_real/{img_type}",
-#     slice_size=(256, 256),
-#     overlap=(32, 32),
-#     iteration=1
-# )

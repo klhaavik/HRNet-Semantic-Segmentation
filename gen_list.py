@@ -112,6 +112,7 @@ def read_ignore_slices_from_file(filename, num_slices_horz):
 if __name__ == "__main__":
     random.seed(304)
 
+    #Update as necessary
     num_slices_vert = 19
     num_slices_horz = 19
     num_slices_vert_synthset = 19

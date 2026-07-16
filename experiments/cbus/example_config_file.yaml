@@ -8,11 +8,12 @@ LOG_DIR: 'log'
 WORKERS: 4
 PRINT_FREQ: 10
 
+# Update this part as necessary
 DATASET:
-  DATASET: cbus
+  DATASET: city
   ROOT: data/
-  TEST_SET: 'list/cbus/val.lst'
-  TRAIN_SET: 'list/cbus/train.lst'
+  TEST_SET: 'list/city/dataset_type_val.lst'
+  TRAIN_SET: 'list/city/dataset_type_train.lst'
   NUM_CLASSES: 2
 MODEL:
   NAME: seg_hrnet_ocr
@@ -81,7 +82,7 @@ TRAIN:
   BATCH_SIZE_PER_GPU: 3
   SHUFFLE: true
   BEGIN_EPOCH: 0
-  END_EPOCH: 5
+  END_EPOCH: 500
   RESUME: true
   OPTIMIZER: sgd
   LR: 0.01
@@ -97,7 +98,7 @@ TEST:
   IMAGE_SIZE:
   - 256
   - 256
-  BASE_SIZE: 2048
+  BASE_SIZE: 256
   BATCH_SIZE_PER_GPU: 4
   FLIP_TEST: false
   MULTI_SCALE: false
